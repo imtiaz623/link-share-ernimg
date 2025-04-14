@@ -62,13 +62,14 @@
     .success { color: green; }
     .error { color: red; }
 
-    .section, .back-btn { display: none; }
+    .section { display: none; }
     .back-btn {
       margin-top: 20px;
       padding: 10px 20px;
       background: #ccc;
       border-radius: 10px;
       cursor: pointer;
+      display: inline-block;
     }
 
     .active { display: block; }
@@ -132,7 +133,7 @@
 
     <button class="btn withdraw" onclick="openSection('withdraw')">💸 Withdraw</button>
     <button class="btn bonus" onclick="dailyBonus()">🎁 Daily Bonus</button>
-    <button class="btn share" onclick="openSection('share')">📤 Share This App</button>
+    <button class="btn share" onclick="shareApp()">📤 Share This App</button>
     <button class="btn game" onclick="openSection('game')">🎮 Game Install</button>
 
     <div id="bonus-msg" class="message"></div>
@@ -145,7 +146,7 @@
     
     <div id="payment-methods">
       <div class="payment-option" onclick="selectPaymentMethod('jazzcash')">
-        <img src="https://play-lh.googleusercontent.com/emL1YyHtN8Q7iX2v9h7w3Z5Z5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q" alt="JazzCash">
+        <img src="https://play-lh.googleusercontent.com/emL1YyHtN8Q7iX2v9h7w3Z5Z5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q" alt="JazzCash">
         <div>JazzCash</div>
       </div>
       
@@ -160,6 +161,7 @@
       <input type="number" id="withdraw-amount" class="amount-input" placeholder="Enter amount (Rs. 500 minimum)">
       <input type="number" id="phone-number" class="phone-input" placeholder="Enter your phone number">
       <button class="submit-btn" onclick="submitWithdraw()">Submit</button>
+      <div class="back-btn" onclick="goBack()">⬅ Back</div>
     </div>
     
     <div class="back-btn" onclick="goBack()">⬅ Back</div>
@@ -168,8 +170,8 @@
   <!-- Share Section -->
   <div id="share" class="section">
     <h3>📤 Share Bonus</h3>
-    <button class="btn-3d" onclick="claimShare()">👉 Click Here</button>
-    <div class="message success">Har share pe hasil karein Rs10 ka bonus.</div>
+    <button class="btn-3d" onclick="shareOnWhatsApp()">👉 Share on WhatsApp</button>
+    <div class="message success">Har share pe hasil karein Rs50 ka bonus.</div>
     <div class="back-btn" onclick="goBack()">⬅ Back</div>
   </div>
 
@@ -195,6 +197,7 @@
 
   let nextBonusTime = localStorage.getItem("nextBonusTime") || 0;
   let selectedPaymentMethod = '';
+  let lastShareTime = 0;
 
   function updateBalance() {
     document.getElementById("bal").innerText = balance;
@@ -236,10 +239,27 @@
     }
   }
 
-  function claimShare() {
-    balance += 10;
+  function shareApp() {
+    openSection('share');
+  }
+
+  function shareOnWhatsApp() {
+    const now = new Date().getTime();
+    const shareCooldown = 60 * 60 * 1000; // 1 hour cooldown
+    
+    if (now - lastShareTime < shareCooldown) {
+      alert("⌛ Ap ek ghante mein sirf ek bar share bonus le sakte hain.");
+      return;
+    }
+    
+    const shareText = "Ye dekho ye amazing earning app! Rs50 daily bonus aur easy withdrawal. Download now: https://imtiaz623.github.io/link-share-ernimg/";
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
+    
+    balance += 50;
     updateBalance();
-    alert("🎉 Share Bonus mil gaya! Rs10 add hua.");
+    lastShareTime = now;
+    alert("🎉 Share Bonus mil gaya! Rs50 add hua.");
   }
 
   function selectPaymentMethod(method) {
