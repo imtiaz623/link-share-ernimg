@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Earn App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #dbeafe, #e0f7fa);
+      text-align: center;
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .balance {
+      font-size: 28px;
+      color: green;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .withdraw { background-color: #ff5722; }
+    .bonus { background-color: #4caf50; }
+    .share { background-color: #2196f3; }
+    .game { background-color: #9c27b0; }
+    .btn-3d {
+      background: linear-gradient(145deg, #2196f3, #1976d2);
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 15px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+      margin-top: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn-3d:hover { transform: scale(1.1); }
+
+    .message { margin-top: 15px; font-weight: bold; }
+    .success { color: green; }
+    .error { color: red; }
+
+    .section, .back-btn { display: none; }
+    .back-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #ccc;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .active { display: block; }
+    
+    .payment-option {
+      margin: 15px auto;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      max-width: 300px;
+      cursor: pointer;
+    }
+    
+    .payment-option:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .payment-option img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
+    
+    .amount-input {
+      margin: 15px 0;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .submit-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .submit-btn:hover {
+      background-color: #45a049;
+    }
+    
+    .phone-input {
+      margin: 15px 0;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div id="main-screen" class="section active">
+    <h2>🎯 Aapka Balance</h2>
+    <div class="balance">Rs. <span id="bal">0</span></div>
+
+    <button class="btn withdraw" onclick="openSection('withdraw')">💸 Withdraw</button>
+    <button class="btn bonus" onclick="dailyBonus()">🎁 Daily Bonus</button>
+    <button class="btn share" onclick="openSection('share')">📤 Share This App</button>
+    <button class="btn game" onclick="openSection('game')">🎮 Game Install</button>
+
+    <div id="bonus-msg" class="message"></div>
+  </div>
+
+  <!-- Withdraw Section -->
+  <div id="withdraw" class="section">
+    <h3>Withdraw</h3>
+    <div id="withdraw-msg" class="message"></div>
+    
+    <div id="payment-methods">
+      <div class="payment-option" onclick="selectPaymentMethod('jazzcash')">
+        <img src="https://play-lh.googleusercontent.com/emL1YyHtN8Q7iX2v9h7w3Z5Z5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q" alt="JazzCash">
+        <div>JazzCash</div>
+      </div>
+      
+      <div class="payment-option" onclick="selectPaymentMethod('easypaisa')">
+        <img src="https://play-lh.googleusercontent.com/9Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z-7Z" alt="EasyPaisa">
+        <div>EasyPaisa</div>
+      </div>
+    </div>
+    
+    <div id="withdraw-form" style="display:none;">
+      <h4 id="method-name">Withdraw to JazzCash</h4>
+      <input type="number" id="withdraw-amount" class="amount-input" placeholder="Enter amount (Rs. 500 minimum)">
+      <input type="number" id="phone-number" class="phone-input" placeholder="Enter your phone number">
+      <button class="submit-btn" onclick="submitWithdraw()">Submit</button>
+    </div>
+    
+    <div class="back-btn" onclick="goBack()">⬅ Back</div>
+  </div>
+
+  <!-- Share Section -->
+  <div id="share" class="section">
+    <h3>📤 Share Bonus</h3>
+    <button class="btn-3d" onclick="claimShare()">👉 Click Here</button>
+    <div class="message success">Har share pe hasil karein Rs10 ka bonus.</div>
+    <div class="back-btn" onclick="goBack()">⬅ Back</div>
+  </div>
+
+  <!-- Game Install Section -->
+  <div id="game" class="section">
+    <h3>🎮 Game Bonus</h3>
+    <a href="https://lp.s9.game/m/share?channel=6&userId=1832383&shareCode=1832383&bindCode=500" target="_blank">
+      <button class="btn-3d">🎮 Install</button>
+    </a>
+    <div class="message success">Game install kar ke register karny pe Rs60 ka bonus hasil karein.</div>
+    <div class="back-btn" onclick="goBack()">⬅ Back</div>
+  </div>
+</div>
+
+<script>
+  let balance = localStorage.getItem("userBalance");
+  if (balance === null) {
+    balance = 0;
+    localStorage.setItem("userBalance", balance);
+  } else {
+    balance = parseInt(balance);
+  }
+
+  let nextBonusTime = localStorage.getItem("nextBonusTime") || 0;
+  let selectedPaymentMethod = '';
+
+  function updateBalance() {
+    document.getElementById("bal").innerText = balance;
+    localStorage.setItem("userBalance", balance);
+  }
+
+  function openSection(id) {
+    document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    
+    if (id === 'withdraw') {
+      document.getElementById('payment-methods').style.display = 'block';
+      document.getElementById('withdraw-form').style.display = 'none';
+    }
+  }
+
+  function goBack() {
+    document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+    document.getElementById('main-screen').classList.add('active');
+  }
+
+  function dailyBonus() {
+    const msg = document.getElementById("bonus-msg");
+    const now = new Date().getTime();
+
+    if (now > nextBonusTime) {
+      balance += 10;
+      updateBalance();
+      nextBonusTime = now + 12 * 60 * 60 * 1000;
+      localStorage.setItem("nextBonusTime", nextBonusTime);
+      msg.className = 'message success';
+      msg.innerText = "🎁 Rs10 ka daily bonus mil gaya!";
+    } else {
+      let remaining = nextBonusTime - now;
+      let hours = Math.floor(remaining / (1000 * 60 * 60));
+      let mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      msg.className = 'message error';
+      msg.innerText = `⌛ Bonus dobara milne tak: ${hours} ghante ${mins} min baqi hain.`;
+    }
+  }
+
+  function claimShare() {
+    balance += 10;
+    updateBalance();
+    alert("🎉 Share Bonus mil gaya! Rs10 add hua.");
+  }
+
+  function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    document.getElementById('payment-methods').style.display = 'none';
+    document.getElementById('withdraw-form').style.display = 'block';
+    
+    if (method === 'jazzcash') {
+      document.getElementById('method-name').innerText = 'Withdraw to JazzCash';
+    } else {
+      document.getElementById('method-name').innerText = 'Withdraw to EasyPaisa';
+    }
+  }
+
+  function submitWithdraw() {
+    const amount = parseInt(document.getElementById('withdraw-amount').value);
+    const phone = document.getElementById('phone-number').value;
+    const msg = document.getElementById("withdraw-msg");
+    
+    if (!amount || !phone) {
+      msg.className = 'message error';
+      msg.innerText = "❌ Please enter amount and phone number.";
+      return;
+    }
+    
+    if (amount < 500) {
+      msg.className = 'message error';
+      msg.innerText = "❌ Minimum withdraw amount is Rs. 500.";
+      return;
+    }
+    
+    if (amount > balance) {
+      msg.className = 'message error';
+      msg.innerText = "❌ Aapka balance itna nahi hai.";
+      return;
+    }
+    
+    if (phone.length !== 11 || !phone.startsWith('03')) {
+      msg.className = 'message error';
+      msg.innerText = "❌ Please enter a valid mobile number (e.g. 03XXXXXXXXX).";
+      return;
+    }
+    
+    // Success case
+    balance -= amount;
+    updateBalance();
+    msg.className = 'message success';
+    msg.innerText = `✅ Withdraw request of Rs. ${amount} to ${phone} has been submitted. Amount will be transferred within 24 hours.`;
+    
+    // Reset form
+    document.getElementById('withdraw-amount').value = '';
+    document.getElementById('phone-number').value = '';
+    document.getElementById('payment-methods').style.display = 'block';
+    document.getElementById('withdraw-form').style.display = 'none';
+  }
+
+  updateBalance();
+</script>
+
+</body>
+</html>
